@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024 Special Report: Editable Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&family=Playfair+Display:wght@700&family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <style>
+        :root { --primary: #0f172a; --accent: #d4af37; --bg: #f8f7f2; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #000; font-family: 'Noto Sans KR', sans-serif; overflow: hidden; }
+
+        /* 편집 안내 바 */
+        #edit-bar {
+            position: fixed; top: 0; left: 0; width: 100%; background: #ff4d4d; color: white;
+            padding: 10px; text-align: center; z-index: 10000; font-size: 14px; font-weight: bold;
+        }
+
+        /* 슬라이드 기본 구성 */
+        .swiper { width: 100vw; height: 100vh; }
+        .slide-container {
+            width: 100%; height: 100%; background-color: var(--bg);
+            display: flex; flex-direction: column; position: relative;
+        }
+
+        /* 편집 가능 영역 표시 */
+        [contenteditable="true"]:hover { outline: 2px dashed var(--accent); cursor: text; }
+        img { cursor: pointer; transition: opacity 0.3s; }
+        img:hover { opacity: 0.7; }
+
+        /* [슬라이드별 레이아웃 - 이전과 동일하되 편집 가능하도록 설정] */
+        .content-area { flex-grow: 1; padding: 60px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+        .title-slide { background: var(--primary); color: white; }
+        .title-slide h1 { font-family: 'Playfair Display'; font-size: 4rem; color: var(--accent); margin-bottom: 20px; }
+        .stat-grid { display: flex; gap: 30px; justify-content: center; }
+        .stat-item { flex: 1; }
+        .stat-num { font-size: 5rem; font-weight: 700; color: var(--accent); font-family: 'DM Sans'; }
+        
+        .photo-frame { width: 80%; height: 400px; margin: 20px auto; border: 5px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .coupon-box { border: 3px dashed var(--accent); padding: 40px; border-radius: 20px; background: #fff; }
+
+        /* 카운트다운 */
+        #countdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); color: var(--accent);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        #timer { font-size: 150px; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <div id="edit-bar">🛠️ 편집 모드: 글자를 클릭해서 수정하고, 사진을 클릭해서 내 사진을 불러오세요! (새로고침하면 사라집니다)</div>
+
+    <div id="countdown-overlay">
+        <h2 style="margin-bottom:20px; letter-spacing:5px;">INITIALIZING REPORT</h2>
+        <div id="timer">3</div>
+        <button id="start-btn" style="margin-top:30px; padding:10px 20px; display:none; cursor:pointer;">보고서 시작하기</button>
+    </div>
+
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            
+            <div class="swiper-slide">
+                <div class="slide-container title-slide">
+                    <p contenteditable="true">2024 SPECIAL EDITION</p>
+                    <h1 contenteditable="true">Happy Birthday,<br>[아내이름]</h1>
+                    <p contenteditable="true" style="font-size: 1.5rem; opacity: 0.8;">당신을 위한 연간 행복 보고서</p>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-container">
+                    <h2 style="margin-bottom:50px; font-size:2.5rem; color:var(--primary);" contenteditable="true">Our Happiness Metrics</h2>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-num" contenteditable="true">1460</div>
+                            <div class="label" contenteditable="true">Days of Love</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-num" contenteditable="true">100%</div>
+                            <div class="label" contenteditable="true">Trust & Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-container">
+                    <h2 style="margin-bottom:20px; color:var(--primary);" contenteditable="true">Best Moment</h2>
+                    <div class="photo-frame">
+                        <img src="https://via.placeholder.com/800x400?text=Click+to+Upload+Photo" onclick="triggerUpload(this)">
+                    </div>
+                    <p contenteditable="true">가장 아름다운 당신의 미소를 기록합니다.</p>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-container" style="justify-content:center; align-items:center;">
+                    <div class="coupon-box">
+                        <h2 contenteditable="true" style="color:var(--accent); margin-bottom:20px;">SPECIAL VOUCHER</h2>
+                        <h3 contenteditable="true" style="font-size:2rem; margin-bottom:15px;">[ 24시간 완전 자유 이용권 ]</h3>
+                        <p contenteditable="true">본 권 사용 시 남편은 하루 종일 육아와 가사를 전담합니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-container" style="background:var(--primary); color:white; justify-content:center;">
+                    <h2 contenteditable="true" style="font-size:4rem; color:var(--accent);">Any Questions?</h2>
+                    <p contenteditable="true" style="margin-top:20px; font-size:1.5rem;">질문 대신 따뜻한 포옹이면 충분합니다.</p>
+                    <i class="fa-solid fa-heart" style="font-size:50px; color:var(--accent); margin-top:40px;"></i>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <input type="file" id="file-input" style="display:none" accept="image/*">
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        // 1. 사진 업로드 로직
+        let activeImgElement = null;
+        function triggerUpload(el) {
+            activeImgElement = el;
+            document.getElementById('file-input').click();
+        }
+
+        document.getElementById('file-input').onchange = function(e) {
+            const file = e.target.files[0];
+            if (file && activeImgElement) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    activeImgElement.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // 2. 카운트다운 로직
+        const timerText = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        let count = 3;
+
+        const timerIdx = setInterval(() => {
+            count--;
+            if(count > 0) timerText.innerText = count;
+            else if(count === 0) {
+                timerText.innerText = "READY";
+                clearInterval(timerIdx);
+                startBtn.style.display = "block";
+            }
+        }, 1000);
+
+        startBtn.onclick = () => {
+            document.getElementById('countdown-overlay').style.opacity = '0';
+            document.getElementById('edit-bar').style.display = 'none'; // 시작하면 편집 바 숨김
+            setTimeout(() => {
+                document.getElementById('countdown-overlay').style.display = 'none';
+                initSwiper();
+            }, 800);
+        };
+
+        // 3. 슬라이드 및 꽃가루 로직
+        function initSwiper() {
+            const swiper = new Swiper('.swiper', {
+                effect: 'fade',
+                autoplay: { delay: 5000 },
+                on: {
+                    slideChange: () => triggerConfetti()
+                }
+            });
+            triggerConfetti();
+        }
+
+        function triggerConfetti() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#d4af37', '#ffffff', '#0f172a'] });
+        }
+    </script>
+</body>
+</html>
